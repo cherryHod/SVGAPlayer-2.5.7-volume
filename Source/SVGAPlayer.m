@@ -57,10 +57,22 @@
     return self;
 }
 
+- (void)setVolume:(float)volume {
+    if (volume > 1.0) {
+        _volume = 1.0;
+    } else if (volume <= 0.0) {
+        _volume = 0.0;
+    } else {
+        _volume = volume;
+    }
+}
+
 - (void)initPlayer {
     self.contentMode = UIViewContentModeTop;
     self.clearsAfterStop = YES;
+    self.volume = 1.0;
 }
+
 
 - (void)willMoveToSuperview:(UIView *)newSuperview {
     [super willMoveToSuperview:newSuperview];
@@ -250,6 +262,7 @@
     NSMutableArray *audioLayers = [NSMutableArray array];
     [self.videoItem.audios enumerateObjectsUsingBlock:^(SVGAAudioEntity * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
         SVGAAudioLayer *audioLayer = [[SVGAAudioLayer alloc] initWithAudioItem:obj videoItem:self.videoItem];
+        audioLayer.audioPlayer.volume = self.volume;
         [audioLayers addObject:audioLayer];
     }];
     self.audioLayers = audioLayers;
@@ -345,6 +358,7 @@
     [CATransaction setDisableActions:NO];
     if (self.forwardAnimating && self.audioLayers.count > 0) {
         for (SVGAAudioLayer *layer in self.audioLayers) {
+            layer.audioPlayer.volume = self.volume;
             if (!layer.audioPlaying && layer.audioItem.startFrame <= self.currentFrame && self.currentFrame <= layer.audioItem.endFrame) {
                 [layer.audioPlayer setCurrentTime:(NSTimeInterval)(layer.audioItem.startTime / 1000)];
                 [layer.audioPlayer play];
