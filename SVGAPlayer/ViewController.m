@@ -37,6 +37,7 @@ static SVGAParser *parser;
 
 - (IBAction)onChange:(id)sender {
     NSArray *items = @[
+        @"https://test-amg.wanqiushuju.com/roomGift/svga/sg-god.svga",
                        @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/EmptyState.svga?raw=true",
                        @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/HamburgerArrow.svga?raw=true",
                        @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/PinJump.svga?raw=true",
@@ -51,7 +52,8 @@ static SVGAParser *parser;
                        ];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 //    parser.enabledMemoryCache = YES;
-    [parser parseWithURL:[NSURL URLWithString:items[arc4random() % items.count]]
+    int i = arc4random() % items.count;
+    [parser parseWithURL:[NSURL URLWithString:items[0]]
          completionBlock:^(SVGAVideoEntity * _Nullable videoItem) {
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              if (videoItem != nil) {

@@ -17,6 +17,8 @@
 
 @interface SVGAParser ()
 
+@property (nonatomic, copy) NSString * sourceUrl;
+
 @end
 
 @implementation SVGAParser
@@ -34,6 +36,7 @@ static NSOperationQueue *unzipQueue;
 - (void)parseWithURL:(nonnull NSURL *)URL
      completionBlock:(void ( ^ _Nonnull )(SVGAVideoEntity * _Nullable videoItem))completionBlock
         failureBlock:(void ( ^ _Nullable)(NSError * _Nullable error))failureBlock {
+    self.sourceUrl = [URL absoluteString];
     [self parseWithURLRequest:[NSURLRequest requestWithURL:URL cachePolicy:NSURLRequestReturnCacheDataElseLoad timeoutInterval:20.0]
     completionBlock:completionBlock
        failureBlock:failureBlock];
@@ -131,6 +134,7 @@ static NSOperationQueue *unzipQueue;
             SVGAProtoMovieEntity *protoObject = [SVGAProtoMovieEntity parseFromData:protoData error:&err];
             if (!err && [protoObject isKindOfClass:[SVGAProtoMovieEntity class]]) {
                 SVGAVideoEntity *videoItem = [[SVGAVideoEntity alloc] initWithProtoObject:protoObject cacheDir:cacheDir];
+                videoItem.sourceUrl = _sourceUrl;
                 [videoItem resetImagesWithProtoObject:protoObject];
                 [videoItem resetSpritesWithProtoObject:protoObject];
                 [videoItem resetAudiosWithProtoObject:protoObject];
@@ -222,6 +226,7 @@ static NSOperationQueue *unzipQueue;
             SVGAProtoMovieEntity *protoObject = [SVGAProtoMovieEntity parseFromData:inflateData error:&err];
             if (!err && [protoObject isKindOfClass:[SVGAProtoMovieEntity class]]) {
                 SVGAVideoEntity *videoItem = [[SVGAVideoEntity alloc] initWithProtoObject:protoObject cacheDir:@""];
+                videoItem.sourceUrl = _sourceUrl;
                 [videoItem resetImagesWithProtoObject:protoObject];
                 [videoItem resetSpritesWithProtoObject:protoObject];
                 [videoItem resetAudiosWithProtoObject:protoObject];
@@ -280,6 +285,7 @@ static NSOperationQueue *unzipQueue;
                             SVGAProtoMovieEntity *protoObject = [SVGAProtoMovieEntity parseFromData:protoData error:&err];
                             if (!err) {
                                 SVGAVideoEntity *videoItem = [[SVGAVideoEntity alloc] initWithProtoObject:protoObject cacheDir:cacheDir];
+                                videoItem.sourceUrl = _sourceUrl;
                                 [videoItem resetImagesWithProtoObject:protoObject];
                                 [videoItem resetSpritesWithProtoObject:protoObject];
                                 if (self.enabledMemoryCache) {

@@ -19,8 +19,10 @@
 @property (nonatomic, readonly) int frames;
 @property (nonatomic, readonly) NSDictionary<NSString *, UIImage *> *images;
 @property (nonatomic, readonly) NSDictionary<NSString *, NSData *> *audiosData;
+@property (nonatomic, readonly) NSDictionary<NSString *, NSString *> *audiosPath;
 @property (nonatomic, readonly) NSArray<SVGAVideoSpriteEntity *> *sprites;
 @property (nonatomic, readonly) NSArray<SVGAAudioEntity *> *audios;
+@property (nonatomic, copy) NSString *sourceUrl;
 
 - (instancetype)initWithJSONObject:(NSDictionary *)JSONObject cacheDir:(NSString *)cacheDir;
 - (void)resetImagesWithJSONObject:(NSDictionary *)JSONObject;

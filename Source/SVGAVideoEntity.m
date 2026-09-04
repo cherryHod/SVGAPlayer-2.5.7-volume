@@ -22,6 +22,7 @@
 @property (nonatomic, assign) int frames;
 @property (nonatomic, copy) NSDictionary<NSString *, UIImage *> *images;
 @property (nonatomic, copy) NSDictionary<NSString *, NSData *> *audiosData;
+@property (nonatomic, copy) NSDictionary<NSString *, NSString *> *audiosPath;
 @property (nonatomic, copy) NSArray<SVGAVideoSpriteEntity *> *sprites;
 @property (nonatomic, copy) NSArray<SVGAAudioEntity *> *audios;
 @property (nonatomic, copy) NSString *cacheDir;
@@ -151,6 +152,7 @@ static dispatch_semaphore_t videoSemaphore;
 - (void)resetImagesWithProtoObject:(SVGAProtoMovieEntity *)protoObject {
     NSMutableDictionary<NSString *, UIImage *> *images = [[NSMutableDictionary alloc] init];
     NSMutableDictionary<NSString *, NSData *> *audiosData = [[NSMutableDictionary alloc] init];
+    NSMutableDictionary<NSString *, NSString *> *audiosPath = [[NSMutableDictionary alloc] init];
     NSDictionary *protoImages = [protoObject.images copy];
     for (NSString *key in protoImages) {
         NSString *fileName = [[NSString alloc] initWithData:protoImages[key] encoding:NSUTF8StringEncoding];
@@ -171,9 +173,44 @@ static dispatch_semaphore_t videoSemaphore;
             }
         }
         else if ([protoImages[key] isKindOfClass:[NSData class]]) {
-            if ([SVGAVideoEntity isMP3Data:protoImages[key]]) {
+            NSData *data = protoImages[key];
+            if ([SVGAVideoEntity isMP3Data:data]) {
                 // mp3
-                [audiosData setObject:protoImages[key] forKey:key];
+                [audiosData setObject:data forKey:key];
+                NSString * cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+                NSString *mp3Path = [cachePath stringByAppendingPathComponent:@"mp3"];
+                BOOL isDirectory = NO;
+                BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:mp3Path
+                                                   isDirectory:&isDirectory];
+                if (!(exists && isDirectory)) {
+                    NSError *error = nil;
+                    BOOL success = [[NSFileManager defaultManager] createDirectoryAtPath:mp3Path
+                                              withIntermediateDirectories:YES
+                                                               attributes:nil
+                                                                error:&error];
+                    if (!success) {
+                        NSLog(@"创建 MP3 目录失败: %@", error);
+                        return;
+                    }
+                    NSLog(@"MP3 目录创建成功: %@", mp3Path);
+                }
+                
+                NSString *mp3FilePath = [mp3Path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", key]];
+                if ([[NSFileManager defaultManager] fileExistsAtPath:mp3FilePath]) {
+                    [audiosPath setObject:mp3FilePath forKey:key];
+                    NSLog(@"音频文件有缓存");
+                } else {
+                    
+//                    BOOL success = [data writeToFile:mp3FilePath atomically:YES];
+                    NSError *error;
+                    [data writeToFile:mp3FilePath options:NSDataWritingAtomic error:&error];
+                    if (error == nil) {
+                        [audiosPath setObject:mp3FilePath forKey:key];
+                        NSLog(@"MP3缓存成功:%@", mp3FilePath);
+                    } else {
+                        NSLog(@"MP3缓存失败:%@", error.localizedDescription);
+                    }
+                }
             } else {
                 UIImage *image = [[UIImage alloc] initWithData:protoImages[key] scale:2.0];
                 if (image != nil) {
@@ -184,6 +221,7 @@ static dispatch_semaphore_t videoSemaphore;
     }
     self.images = images;
     self.audiosData = audiosData;
+    self.audiosPath = audiosPath;
 }
 
 - (void)resetSpritesWithProtoObject:(SVGAProtoMovieEntity *)protoObject {
