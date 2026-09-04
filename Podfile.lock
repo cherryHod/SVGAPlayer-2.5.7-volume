@@ -1,16 +1,12 @@
 PODS:
   - Protobuf (3.6.1)
   - SSZipArchive (2.1.4)
-  - ZegoExpressEngine (3.25.0)
 
 DEPENDENCIES:
   - Protobuf (~> 3.4)
   - SSZipArchive (~> 2.1.4)
-  - ZegoExpressEngine (~> 3.25.0)
 
 SPEC REPOS:
-  https://mirrors.tuna.tsinghua.edu.cn/git/CocoaPods/Specs.git:
-    - ZegoExpressEngine
   trunk:
     - Protobuf
     - SSZipArchive
@@ -18,8 +14,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   Protobuf: 1eb9700044745f00181c136ef21b8ff3ad5a0fd5
   SSZipArchive: 41455d4b8d2b6ab93990820b50dc697c2554a322
-  ZegoExpressEngine: a95ea045a302a4157f730dfee5a569d447f6a976
 
-PODFILE CHECKSUM: 9a61c5b2c235388fd52a66b11ac73b6a8c30d8d4
+PODFILE CHECKSUM: be7ce2a31320947ce1c3824fbec620fdf5cdec40
 
 COCOAPODS: 1.16.2

@@ -247,7 +247,6 @@
 				90A676D91D13A6DF008A69F3 /* Sources */,
 				90A676DA1D13A6DF008A69F3 /* Frameworks */,
 				90A676DB1D13A6DF008A69F3 /* Resources */,
-				20700B18A06E4EF59D3766C2 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -316,24 +315,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		20700B18A06E4EF59D3766C2 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-SVGAPlayer/Pods-SVGAPlayer-frameworks.sh",
-				"${PODS_XCFRAMEWORKS_BUILD_DIR}/ZegoExpressEngine/ZegoExpressEngine.framework/ZegoExpressEngine",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZegoExpressEngine.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-SVGAPlayer/Pods-SVGAPlayer-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		CD70B01EE331E392E355CD26 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
