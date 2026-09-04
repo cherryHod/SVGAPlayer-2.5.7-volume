@@ -58,6 +58,9 @@ static SVGAParser *parser;
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              if (videoItem != nil) {
                  self.aPlayer.videoItem = videoItem;
+                 self.aPlayer.videoItem.playAudioBlock = ^(NSString *filePath) {
+                     NSLog(@"我自己播放");
+                 };
                  NSMutableParagraphStyle *para = [[NSMutableParagraphStyle alloc] init];
                  [para setLineBreakMode:NSLineBreakByTruncatingTail];
                  [para setAlignment:NSTextAlignmentCenter];
