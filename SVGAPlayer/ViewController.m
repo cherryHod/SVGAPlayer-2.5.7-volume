@@ -38,26 +38,28 @@ static SVGAParser *parser;
 - (IBAction)onChange:(id)sender {
     NSArray *items = @[
         @"https://test-amg.wanqiushuju.com/roomGift/svga/sg-god.svga",
-                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/EmptyState.svga?raw=true",
-                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/HamburgerArrow.svga?raw=true",
-                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/PinJump.svga?raw=true",
-                       @"https://github.com/svga/SVGA-Samples/raw/master/Rocket.svga",
-                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/TwitterHeart.svga?raw=true",
-                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/Walkthrough.svga?raw=true",
-                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/angel.svga?raw=true",
-                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/halloween.svga?raw=true",
-                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/kingset.svga?raw=true",
-                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/posche.svga?raw=true",
-                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/rose.svga?raw=true",
+        @"https://test-amg.wanqiushuju.com/roomGift/svga/2772-yellowCard1.svga",
+//                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/EmptyState.svga?raw=true",
+//                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/HamburgerArrow.svga?raw=true",
+//                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/PinJump.svga?raw=true",
+//                       @"https://github.com/svga/SVGA-Samples/raw/master/Rocket.svga",
+//                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/TwitterHeart.svga?raw=true",
+//                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/Walkthrough.svga?raw=true",
+//                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/angel.svga?raw=true",
+//                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/halloween.svga?raw=true",
+//                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/kingset.svga?raw=true",
+//                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/posche.svga?raw=true",
+//                       @"https://cdn.jsdelivr.net/gh/svga/SVGA-Samples@master/rose.svga?raw=true",
                        ];
     [UIApplication sharedApplication].networkActivityIndicatorVisible = YES;
 //    parser.enabledMemoryCache = YES;
     int i = arc4random() % items.count;
-    [parser parseWithURL:[NSURL URLWithString:items[0]]
+    [parser parseWithURL:[NSURL URLWithString:items[i]]
          completionBlock:^(SVGAVideoEntity * _Nullable videoItem) {
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              if (videoItem != nil) {
                  self.aPlayer.videoItem = videoItem;
+//                 self.aPlayer.videoItem.playAudioBySelf = false;
                  self.aPlayer.videoItem.playAudioBlock = ^(NSString *filePath) {
                      NSLog(@"我自己播放");
                  };

@@ -23,6 +23,7 @@
 @property (nonatomic, readonly) NSArray<SVGAVideoSpriteEntity *> *sprites;
 @property (nonatomic, readonly) NSArray<SVGAAudioEntity *> *audios;
 @property (nonatomic, copy) NSString *sourceUrl;
+@property (nonatomic, assign) BOOL playAudioBySelf;
 @property (nonatomic, copy) void (^playAudioBlock)(NSString *filePath);
 
 - (instancetype)initWithJSONObject:(NSDictionary *)JSONObject cacheDir:(NSString *)cacheDir;

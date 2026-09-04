@@ -12,6 +12,7 @@
 #import "SVGAVideoSpriteEntity.h"
 #import "SVGAAudioEntity.h"
 #import "Svga.pbobjc.h"
+#import <CommonCrypto/CommonDigest.h>
 
 #define MP3_MAGIC_NUMBER "ID3"
 
@@ -177,40 +178,13 @@ static dispatch_semaphore_t videoSemaphore;
             if ([SVGAVideoEntity isMP3Data:data]) {
                 // mp3
                 [audiosData setObject:data forKey:key];
-                NSString * cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
-                NSString *mp3Path = [cachePath stringByAppendingPathComponent:@"mp3"];
-                BOOL isDirectory = NO;
-                BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:mp3Path
-                                                   isDirectory:&isDirectory];
-                if (!(exists && isDirectory)) {
-                    NSError *error = nil;
-                    BOOL success = [[NSFileManager defaultManager] createDirectoryAtPath:mp3Path
-                                              withIntermediateDirectories:YES
-                                                               attributes:nil
-                                                                error:&error];
-                    if (!success) {
-                        NSLog(@"创建 MP3 目录失败: %@", error);
-                        return;
-                    }
-                    NSLog(@"MP3 目录创建成功: %@", mp3Path);
+                
+                if (_playAudioBySelf) {
+                    [self cacheMP3Audio:data sourceUrl:_sourceUrl finish:^(NSString *path) {
+                        [audiosPath setObject:path forKey:key];
+                    }];
                 }
                 
-                NSString *mp3FilePath = [mp3Path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", key]];
-                if ([[NSFileManager defaultManager] fileExistsAtPath:mp3FilePath]) {
-                    [audiosPath setObject:mp3FilePath forKey:key];
-                    NSLog(@"音频文件有缓存");
-                } else {
-                    
-//                    BOOL success = [data writeToFile:mp3FilePath atomically:YES];
-                    NSError *error;
-                    [data writeToFile:mp3FilePath options:NSDataWritingAtomic error:&error];
-                    if (error == nil) {
-                        [audiosPath setObject:mp3FilePath forKey:key];
-                        NSLog(@"MP3缓存成功:%@", mp3FilePath);
-                    } else {
-                        NSLog(@"MP3缓存失败:%@", error.localizedDescription);
-                    }
-                }
             } else {
                 UIImage *image = [[UIImage alloc] initWithData:protoImages[key] scale:2.0];
                 if (image != nil) {
@@ -269,6 +243,59 @@ static dispatch_semaphore_t videoSemaphore;
     dispatch_semaphore_wait(videoSemaphore, DISPATCH_TIME_FOREVER);
     [weakCache setObject:self forKey:cacheKey];
     dispatch_semaphore_signal(videoSemaphore);
+}
+
+- (void)cacheMP3Audio:(NSData *)data sourceUrl:(NSString *)sourceUrl finish:(void(^)(NSString *path))finish  {
+    NSString * cachePath = NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES).firstObject;
+    NSString *mp3Path = [cachePath stringByAppendingPathComponent:@"mp3"];
+    BOOL isDirectory = NO;
+    BOOL exists = [[NSFileManager defaultManager] fileExistsAtPath:mp3Path
+                                       isDirectory:&isDirectory];
+    if (!(exists && isDirectory)) {
+        NSError *error = nil;
+        BOOL success = [[NSFileManager defaultManager] createDirectoryAtPath:mp3Path
+                                  withIntermediateDirectories:YES
+                                                   attributes:nil
+                                                    error:&error];
+        if (!success) {
+            NSLog(@"创建 MP3 目录失败: %@", error);
+            return;
+        }
+        NSLog(@"MP3 目录创建成功: %@", mp3Path);
+    }
+    
+    NSString *fileName = [self MD5String:sourceUrl];
+    
+    NSString *mp3FilePath = [mp3Path stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.mp3", fileName]];
+    if ([[NSFileManager defaultManager] fileExistsAtPath:mp3FilePath]) {
+//        [audiosPath setObject:mp3FilePath forKey:key];
+        finish(mp3FilePath);
+        NSLog(@"音频文件有缓存");
+    } else {
+        
+        NSError *error;
+        [data writeToFile:mp3FilePath options:NSDataWritingAtomic error:&error];
+        if (error == nil) {
+//            [audiosPath setObject:mp3FilePath forKey:key];
+            finish(mp3FilePath);
+            NSLog(@"MP3缓存成功:%@", mp3FilePath);
+        } else {
+            NSLog(@"MP3缓存失败:%@", error.localizedDescription);
+        }
+    }
+}
+
+- (NSString *)MD5String:(NSString *)str {
+    const char *cstr = [str UTF8String];
+    unsigned char result[16];
+    CC_MD5(cstr, (CC_LONG)strlen(cstr), result);
+    return [NSString stringWithFormat:
+            @"%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X%02X",
+            result[0], result[1], result[2], result[3],
+            result[4], result[5], result[6], result[7],
+            result[8], result[9], result[10], result[11],
+            result[12], result[13], result[14], result[15]
+            ];
 }
 
 @end
