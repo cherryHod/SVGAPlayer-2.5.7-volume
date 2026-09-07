@@ -59,7 +59,7 @@ static SVGAParser *parser;
              [UIApplication sharedApplication].networkActivityIndicatorVisible = NO;
              if (videoItem != nil) {
                  self.aPlayer.videoItem = videoItem;
-//                 self.aPlayer.videoItem.playAudioBySelf = false;
+                 self.aPlayer.videoItem.playAudioBySelf = false;
                  self.aPlayer.videoItem.playAudioBlock = ^(NSString *filePath) {
                      NSLog(@"我自己播放");
                  };

@@ -179,11 +179,11 @@ static dispatch_semaphore_t videoSemaphore;
                 // mp3
                 [audiosData setObject:data forKey:key];
                 
-                if (_playAudioBySelf) {
+//                if (_playAudioBySelf) {
                     [self cacheMP3Audio:data sourceUrl:_sourceUrl finish:^(NSString *path) {
                         [audiosPath setObject:path forKey:key];
                     }];
-                }
+//                }
                 
             } else {
                 UIImage *image = [[UIImage alloc] initWithData:protoImages[key] scale:2.0];
