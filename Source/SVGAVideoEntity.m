@@ -258,10 +258,10 @@ static dispatch_semaphore_t videoSemaphore;
                                                    attributes:nil
                                                     error:&error];
         if (!success) {
-            NSLog(@"创建 MP3 目录失败: %@", error);
+//            NSLog(@"创建 MP3 目录失败: %@", error);
             return;
         }
-        NSLog(@"MP3 目录创建成功: %@", mp3Path);
+//        NSLog(@"MP3 目录创建成功: %@", mp3Path);
     }
     
     NSString *fileName = [self MD5String:sourceUrl];
@@ -270,7 +270,7 @@ static dispatch_semaphore_t videoSemaphore;
     if ([[NSFileManager defaultManager] fileExistsAtPath:mp3FilePath]) {
 //        [audiosPath setObject:mp3FilePath forKey:key];
         finish(mp3FilePath);
-        NSLog(@"音频文件有缓存");
+//        NSLog(@"音频文件有缓存");
     } else {
         
         NSError *error;
@@ -278,9 +278,9 @@ static dispatch_semaphore_t videoSemaphore;
         if (error == nil) {
 //            [audiosPath setObject:mp3FilePath forKey:key];
             finish(mp3FilePath);
-            NSLog(@"MP3缓存成功:%@", mp3FilePath);
+//            NSLog(@"MP3缓存成功:%@", mp3FilePath);
         } else {
-            NSLog(@"MP3缓存失败:%@", error.localizedDescription);
+//            NSLog(@"MP3缓存失败:%@", error.localizedDescription);
         }
     }
 }
